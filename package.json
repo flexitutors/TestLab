@@ -2,8 +2,8 @@
   "name": "alexa-ai",
   "version": "1.0.0",
   "description": "Alexa AI WhatsApp Bot powered by Baileys",
-  "main": "index.js",
   "private": true,
+  "main": "index.js",
   "engines": {
     "node": ">=18.0.0"
   },
@@ -11,7 +11,7 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "@whiskeysockets/baileys": "^6.7.8",
+    "@whiskeysockets/baileys": "^6.7.23",
     "axios": "^1.7.9",
     "ejs": "^3.1.10",
     "express": "^4.21.2",
