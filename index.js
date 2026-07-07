@@ -133,28 +133,27 @@ sock.ev.on("presence.update", (update) => {
     sock.ev.on("connection.update", (update) => {
     const { connection, lastDisconnect } = update;
 
-    console.log("Connection:", connection);
-
-    if (lastDisconnect?.error) {
-        console.error(lastDisconnect.error);
-    }
-
     if (connection === "close") {
         const statusCode =
-            lastDisconnect?.error?.output?.statusCode;
+            lastDisconnect?.error instanceof Boom
+                ? lastDisconnect.error.output.statusCode
+                : undefined;
 
-        console.log("Status Code:", statusCode);
+        console.log("🔴 Connection closed. Status:", statusCode);
 
-        if (statusCode === DisconnectReason.loggedOut) {
-            console.log("Logged out");
+        if (statusCode !== DisconnectReason.loggedOut) {
+            console.log("⚠️ Reconnecting...");
+            setTimeout(() => startBot(), 3000);
         } else {
-            console.log("Reconnecting...");
-            startBot();
+            console.log("🔌 Logged out from WhatsApp.");
+            saveSession({ pairedNumber: null });
         }
-    }
 
-    if (connection === "open") {
-        console.log("Connected successfully");
+    } else if (connection === "connecting") {
+        console.log("🟡 Connecting to WhatsApp...");
+
+    } else if (connection === "open") {
+        console.log("✅ Baileys Client Ready");
     }
 });
     
