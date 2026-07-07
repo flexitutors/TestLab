@@ -130,26 +130,33 @@ sock.ev.on("presence.update", (update) => {
 
 });
 
-    sock.ev.on('connection.update', async (update) => {
+    sock.ev.on("connection.update", (update) => {
     const { connection, lastDisconnect } = update;
-    
-    if (connection === 'close') {
-        const statusCode = (lastDisconnect?.error instanceof Boom) ? lastDisconnect.error.output.statusCode : null;
-        
-        // If the user manually logged out via your "Terminate Session" button
+
+    console.log("Connection:", connection);
+
+    if (lastDisconnect?.error) {
+        console.error(lastDisconnect.error);
+    }
+
+    if (connection === "close") {
+        const statusCode =
+            lastDisconnect?.error?.output?.statusCode;
+
+        console.log("Status Code:", statusCode);
+
         if (statusCode === DisconnectReason.loggedOut) {
-            console.log('🔌 Session terminated by user.');
-            saveSession({ pairedNumber: null }); // Clear the UI on the dashboard
+            console.log("Logged out");
         } else {
-            // Otherwise, reconnect automatically
-            console.log('⚠️ Connection lost, reconnecting...');
+            console.log("Reconnecting...");
             startBot();
         }
-    } else if (connection === 'open') {
-        console.log('✅ Baileys Client Ready');
-        // Optional: Perform any 'post-login' tasks here
     }
-    });
+
+    if (connection === "open") {
+        console.log("Connected successfully");
+    }
+});
     
 
     // --- GROUP PARTICIPANT EVENTS (MOVED INSIDE) ---
